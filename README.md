@@ -1,4 +1,4 @@
-## First Camel Route Example
+## First Targeting Collector
 This project shows a simple example of a targeting collector using Apache Camel and the Spring DSL. 
 The collector called "Customer Information" provides a selector to identify the category of the customer, as well as a selector 
 to provide the annual income.
