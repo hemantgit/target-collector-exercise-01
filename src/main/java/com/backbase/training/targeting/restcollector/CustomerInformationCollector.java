@@ -2,10 +2,7 @@ package com.backbase.training.targeting.restcollector;
 
 import com.backbase.portal.targeting.connectorframework.content.contexts.GeoLocationCollector;
 import com.backbase.portal.targeting.connectorframework.content.contexts.SessionContextCollector;
-import com.backbase.portal.targeting.connectorframework.content.contexts.definition.ContextCollector;
-import com.backbase.portal.targeting.connectorframework.content.contexts.definition.PossibleValue;
-import com.backbase.portal.targeting.connectorframework.content.contexts.definition.ResultEntries;
-import com.backbase.portal.targeting.connectorframework.content.contexts.definition.SelectorDefinition;
+import com.backbase.portal.targeting.connectorframework.content.contexts.definition.*;
 import com.backbase.portal.targeting.rulesengine.type.RuleEngineTypes;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -26,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class CustomerInformationCollector extends ContextCollector {
+public class CustomerInformationCollector extends StaticContextCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerInformationCollector.class);
     private static final String CLASSE = "Classification";
@@ -61,17 +58,19 @@ public class CustomerInformationCollector extends ContextCollector {
     @Override
     public ResultEntries executeTask(Map<String, String> requestMap, ResultEntries resultEntries) {
 
-        //get the username of the currently logged-in user
-        String userName = requestMap.get("session.authentication.username");
+        if(resultEntries.isEmpty()) {
+            //get the username of the currently logged-in user
+            String userName = requestMap.get("session.authentication.username");
 
-        CustomerInfo info = CustomerInfoProvider.getInstance().getCustomerInfo(userName);
+            CustomerInfo info = CustomerInfoProvider.getInstance().getCustomerInfo(userName);
 
-        if(info != null) {
-            resultEntries.addSelectorEntry(CLASSE, info.getCustomerClass());
-            resultEntries.addSelectorEntry(INCOME,Integer.toString(new Double(info.getAnnualIncome()).intValue()));
-            logger.debug("customer: " + userName + " class: " + info.getCustomerClass() + " income: " + info.getAnnualIncome());
-
+            if (info != null) {
+                resultEntries.addSelectorEntry(CLASSE, info.getCustomerClass());
+                resultEntries.addSelectorEntry(INCOME, Integer.toString(new Double(info.getAnnualIncome()).intValue()));
+                logger.debug("customer: " + userName + " class: " + info.getCustomerClass() + " income: " + info.getAnnualIncome());
+            }
         }
+
         return resultEntries;
     }
 
