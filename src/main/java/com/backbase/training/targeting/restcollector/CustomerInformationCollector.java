@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class CustomerInformationCollector extends StaticContextCollector {
+public class CustomerInformationCollector extends ContextCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerInformationCollector.class);
     private static final String CLASSE = "Classification";
@@ -58,17 +58,15 @@ public class CustomerInformationCollector extends StaticContextCollector {
     @Override
     public ResultEntries executeTask(Map<String, String> requestMap, ResultEntries resultEntries) {
 
-        if(resultEntries.isEmpty()) {
-            //get the username of the currently logged-in user
-            String userName = requestMap.get("session.authentication.username");
+        //get the username of the currently logged-in user
+        String userName = requestMap.get("session.authentication.username");
 
-            CustomerInfo info = CustomerInfoProvider.getInstance().getCustomerInfo(userName);
+        CustomerInfo info = CustomerInfoProvider.getInstance().getCustomerInfo(userName);
 
-            if (info != null) {
-                resultEntries.addSelectorEntry(CLASSE, info.getCustomerClass());
-                resultEntries.addSelectorEntry(INCOME, Integer.toString(new Double(info.getAnnualIncome()).intValue()));
-                logger.debug("customer: " + userName + " class: " + info.getCustomerClass() + " income: " + info.getAnnualIncome());
-            }
+        if (info != null) {
+            resultEntries.addSelectorEntry(CLASSE, info.getCustomerClass());
+            resultEntries.addSelectorEntry(INCOME, Integer.toString(new Double(info.getAnnualIncome()).intValue()));
+            logger.debug("customer: " + userName + " class: " + info.getCustomerClass() + " income: " + info.getAnnualIncome());
         }
 
         return resultEntries;
